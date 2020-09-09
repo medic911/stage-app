@@ -12,5 +12,7 @@ class RedirectResponse extends Response
     public function __construct(string $redirectUrl, int $status = 301)
     {
         parent::__construct("Redirecting to {$redirectUrl}...", $status);
+
+        $this->withHeader('Location', $redirectUrl);
     }
 }
