@@ -65,6 +65,22 @@ class Request
     }
 
     /**
+     * @return bool
+     */
+    public function isPost(): bool
+    {
+        return $this->method === 'POST';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGet(): bool
+    {
+        return $this->method === 'GET';
+    }
+
+    /**
      * @return static
      */
     public function make(): self
