@@ -35,6 +35,36 @@ class Request
     }
 
     /**
+     * @param string $name
+     * @param null $default
+     * @return mixed|null
+     */
+    public function fromGet(string $name, $default = null)
+    {
+        return $_GET[$name] ?: $default;
+    }
+
+    /**
+     * @param string $name
+     * @param null $default
+     * @return mixed|null
+     */
+    public function fromPost(string $name, $default = null)
+    {
+        return $_POST[$name] ?: $default;
+    }
+
+    /**
+     * @param string $name
+     * @param null $default
+     * @return mixed|null
+     */
+    public function fromRequest(string $name, $default = null)
+    {
+        return $this->fromGet($name) ?: $this->fromPost($name, $default);
+    }
+
+    /**
      * @return static
      */
     public function make(): self
