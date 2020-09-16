@@ -6,15 +6,17 @@ use StageApp\Interfaces\ErrorHandlerInterface;
 use StageApp\Interfaces\StageInterface;
 use StageApp\Http\Request;
 use StageApp\Http\Response;
+use StageApp\Interfaces\WithStagesInterface;
 use StageApp\Traits\Singleton;
+use StageApp\Traits\ThroughStages;
 
 /**
  * Class App
  * @package StageApp
  */
-class App
+class App implements WithStagesInterface
 {
-    use Singleton;
+    use Singleton, ThroughStages;
 
     /**
      * @var array
@@ -52,10 +54,9 @@ class App
     public function run(array $options): void
     {
         try {
-            $this->setOptions($options)
-                 ->filterStages()
-                 ->goThroughStages()
-                 ->terminateWith($this->response);
+            $this->setOptions($options);
+            $this->goThroughStages();
+            $this->terminateWith($this->response);
         } catch (\Throwable $e) {
             $this->errorHandler->handle($e);
         }
@@ -90,36 +91,18 @@ class App
     }
 
     /**
-     * @return $this
+     * @return array
      */
-    protected function goThroughStages(): self
+    protected function getStages(): array
     {
-        foreach ($this->stages as $stage) {
-            $this->handleStage($stage);
-        }
-
-        return $this;
+        return $this->stages;
     }
 
     /**
-     * @return $this
+     * @param mixed $result
      */
-    protected function filterStages(): self
+    protected function handleStageResult($result): void
     {
-        $this->stages = array_filter($this->stages, function ($stage) {
-            return $stage instanceof StageInterface;
-        });
-
-        return $this;
-    }
-
-    /**
-     * @param StageInterface $stage
-     */
-    protected function handleStage(StageInterface $stage): void
-    {
-        $result = $stage->handle($this);
-
         if ($result instanceof Request) {
             $this->request = $result;
         }

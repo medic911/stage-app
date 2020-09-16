@@ -13,10 +13,10 @@ use StageApp\Interfaces\StageInterface;
 class StageMakeRequest implements StageInterface
 {
     /**
-     * @param App $app
+     * @param App $context
      * @return mixed|void
      */
-    public function handle(App $app)
+    public function handle($context)
     {
         return Request::getInstance()->make();
     }

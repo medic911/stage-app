@@ -10,8 +10,8 @@ use StageApp\App;
 interface StageInterface
 {
     /**
-     * @param App $app
+     * @param mixed $context
      * @return mixed
      */
-    public function handle(App $app);
+    public function handle($context);
 }

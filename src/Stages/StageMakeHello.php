@@ -2,21 +2,20 @@
 
 namespace StageApp\Stages;
 
-use StageApp\App;
 use StageApp\Interfaces\StageInterface;
 
 /**
- * Class StageSessionStart
+ * Class StageMakeHello
  * @package StageApp\Stages
  */
-class StageSessionStart implements StageInterface
+class StageMakeHello implements StageInterface
 {
     /**
-     * @param App $context
+     * @param mixed $context
      * @return mixed|void
      */
     public function handle($context)
     {
-        session_start();
+        return 'Hello';
     }
 }

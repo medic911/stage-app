@@ -16,15 +16,15 @@ use StageApp\Router;
 class StageMakeResponse implements StageInterface
 {
     /**
-     * @param App $app
+     * @param App $context
      * @return Response|mixed
      * @throws InvalidResponseType
      */
-    public function handle(App $app)
+    public function handle($context)
     {
         $router = new Router('');
         try {
-            $callable = $router->match($app->getRequest());
+            $callable = $router->match($context->getRequest());
         } catch (RouteNotFoundException $e) {
             return Response::e404($e->getMessage());
         }
