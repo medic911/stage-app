@@ -2,6 +2,7 @@
 
 namespace StageApp;
 
+use Illuminate\Support\Str;
 use StageApp\Exceptions\RouteNotFoundException;
 use StageApp\Http\Request;
 use StageApp\Interfaces\RouterInterface;
@@ -92,7 +93,7 @@ class Router implements RouterInterface
             $action = $action[0] ?? $this->defaultAction;
         }
 
-        $this->action = strtolower($action) . 'Action';
+        $this->action = $this->normalizeActionName(strtolower($action)) . 'Action';
     }
 
     /**
@@ -102,9 +103,63 @@ class Router implements RouterInterface
     protected function makeController(array $path): string
     {
         if (count($path) > 0) {
-            return $this->controllerNamespace . implode('\\', $path) . 'Controller';
+            return $this->controllerNamespace . $this->normalizeControllerPath(implode('\\', $path)) . 'Controller';
         }
 
         return  $this->controllerNamespace . $this->defaultController;
+    }
+
+    /**
+     * @param string $target
+     * @return string
+     */
+    protected function normalizeActionName(string $target): string
+    {
+        if (!Str::contains($target, '-')) {
+            return $target;
+        }
+
+        return $this->normalize($target);
+    }
+
+    /**
+     * @param string $target
+     * @return string
+     */
+    protected function normalizeControllerPath(string $target): string
+    {
+        if (!Str::contains($target, '-')) {
+            return $target;
+        }
+
+        $target = explode('\\', $target);
+        $target = array_map(function ($part) {
+            if (!Str::contains($part, '-')) {
+                return $part;
+            }
+
+            return $this->normalize($part, false);
+        }, $target);
+
+        return implode('\\', $target);
+    }
+
+    /**
+     * @param string $target
+     * @param bool $asAction
+     * @return string
+     */
+    protected function normalize(string $target, bool $asAction = true): string
+    {
+        $target = explode('-', $target);
+        $target = array_map(function ($part, $index) use ($asAction) {
+            if (!$asAction || $index > 0) {
+                return ucfirst($part);
+            }
+
+            return $part;
+        }, $target, array_keys($target));
+
+        return implode('', $target);
     }
 }
