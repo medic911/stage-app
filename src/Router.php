@@ -49,7 +49,7 @@ class Router implements RouterInterface
      */
     public function match(Request $request): array
     {
-        $path = $this->preparePath($request->getPath());
+        $path = $this->preparePath($request->getSplittedPath());
         $this->matchFromPath($path);
 
         if (!class_exists($this->controller)) {
@@ -64,19 +64,11 @@ class Router implements RouterInterface
     }
 
     /**
-     * @param string $path
+     * @param array $path
      * @return array
      */
-    protected function preparePath(string $path): array
+    protected function preparePath(array $path): array
     {
-        $path = explode('/', $path);
-        $path = array_filter($path, function ($part) {
-            return !empty($part) &&
-                   $part !== '.' &&
-                   $part !== '..' &&
-                   trim($part) !== '';
-        });
-
         // slice lang url part
         $path = array_slice($path, 1);
 

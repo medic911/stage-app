@@ -14,6 +14,11 @@ class Request
     protected $path;
 
     /**
+     * @var array
+     */
+    protected $splittedPath;
+
+    /**
      * @var string
      */
     protected $method;
@@ -24,6 +29,22 @@ class Request
     public function getPath(): string
     {
         return $this->path;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSplittedPath(): array
+    {
+        return $this->splittedPath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLang(): string
+    {
+        return $this->splittedPath[0] ?? '';
     }
 
     /**
@@ -88,6 +109,25 @@ class Request
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->path = (string) parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
+        $this->makeSplittedPath();
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function makeSplittedPath(): self
+    {
+        $path = explode('/', $this->path);
+        $this->splittedPath = array_filter($path, function ($part) {
+            return !empty($part) &&
+                $part !== '.' &&
+                $part !== '..' &&
+                trim($part) !== '';
+        });
+
+        $this->splittedPath = array_values($this->splittedPath);
 
         return $this;
     }
