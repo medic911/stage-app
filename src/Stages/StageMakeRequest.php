@@ -5,6 +5,7 @@ namespace StageApp\Stages;
 use StageApp\App;
 use StageApp\Http\Request;
 use StageApp\Interfaces\StageInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Class StageMakeRequest
@@ -18,6 +19,6 @@ class StageMakeRequest implements StageInterface
      */
     public function handle($context)
     {
-        return Request::getInstance()->make();
+        return Request::createFromGlobals();
     }
 }

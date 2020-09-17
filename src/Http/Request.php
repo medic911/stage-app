@@ -2,132 +2,73 @@
 
 namespace StageApp\Http;
 
-use StageApp\Traits\Singleton;
-
-class Request
+class Request extends \Symfony\Component\HttpFoundation\Request
 {
-    use Singleton;
-
-    /**
-     * @var string
-     */
-    protected $path;
-
     /**
      * @var array
      */
-    protected $splittedPath;
+    protected $pathAsArray;
 
     /**
-     * @var string
+     * @var string|null
      */
-    protected $method;
+    protected $lang;
 
     /**
-     * @return string
+     * Request constructor.
+     * @param array $query
+     * @param array $request
+     * @param array $attributes
+     * @param array $cookies
+     * @param array $files
+     * @param array $server
+     * @param null $content
      */
-    public function getPath(): string
-    {
-        return $this->path;
+    public function __construct(
+        array $query = [],
+        array $request = [],
+        array $attributes = [],
+        array $cookies = [],
+        array $files = [],
+        array $server = [],
+        $content = null
+    ) {
+        parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
+
+        $this->makePathAsArray();
+        $this->lang = $this->basePathAsArray[0] ?? 'en';
     }
 
     /**
      * @return array
      */
-    public function getSplittedPath(): array
+    public function getPathAsArray(): array
     {
-        return $this->splittedPath;
+        return $this->basePathAsArray;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLang(): string
+    public function getLang(): ?string
     {
-        return $this->splittedPath[0] ?? '';
-    }
-
-    /**
-     * @return string
-     */
-    public function getMethod(): string
-    {
-        return $this->method;
-    }
-
-    /**
-     * @param string $name
-     * @param null $default
-     * @return mixed|null
-     */
-    public function fromGet(string $name, $default = null)
-    {
-        return $_GET[$name] ?: $default;
-    }
-
-    /**
-     * @param string $name
-     * @param null $default
-     * @return mixed|null
-     */
-    public function fromPost(string $name, $default = null)
-    {
-        return $_POST[$name] ?: $default;
-    }
-
-    /**
-     * @param string $name
-     * @param null $default
-     * @return mixed|null
-     */
-    public function fromRequest(string $name, $default = null)
-    {
-        return $this->fromGet($name) ?: $this->fromPost($name, $default);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isPost(): bool
-    {
-        return $this->method === 'POST';
-    }
-
-    /**
-     * @return bool
-     */
-    public function isGet(): bool
-    {
-        return $this->method === 'GET';
-    }
-
-    /**
-     * @return static
-     */
-    public function make(): self
-    {
-        $this->method = $_SERVER['REQUEST_METHOD'];
-        $this->path = (string) parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-        $this->makeSplittedPath();
-
-        return $this;
+        return $this->lang;
     }
 
     /**
      * @return $this
      */
-    protected function makeSplittedPath(): self
+    protected function makePathAsArray(): self
     {
-        $path = explode('/', $this->path);
-        $this->splittedPath = array_filter($path, function ($part) {
+        $path = explode('/', $this->getPathInfo());
+        $this->basePathAsArray = array_filter($path, function ($part) {
             return !empty($part) &&
                 $part !== '.' &&
                 $part !== '..' &&
                 trim($part) !== '';
         });
 
-        $this->splittedPath = array_values($this->splittedPath);
+        $this->basePathAsArray = array_values($this->basePathAsArray);
 
         return $this;
     }

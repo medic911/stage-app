@@ -54,15 +54,15 @@ class Router implements RouterInterface
      */
     public function match(Request $request): array
     {
-        $path = $this->preparePath($request->getSplittedPath());
+        $path = $this->preparePath($request->getPathAsArray());
         $this->matchFromPath($path);
 
         if (!class_exists($this->controller)) {
-            throw new RouteNotFoundException("Route not found for {$request->getPath()}");
+            throw new RouteNotFoundException("Route not found for {$request->getBasePath()}");
         }
 
         if (!is_callable([$this->controller, $this->action])) {
-            throw new RouteNotFoundException("Route not found for {$request->getPath()}");
+            throw new RouteNotFoundException("Route not found for {$request->getBasePath()}");
         }
 
         return [new $this->controller, $this->action];

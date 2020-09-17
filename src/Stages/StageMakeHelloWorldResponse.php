@@ -3,10 +3,10 @@
 namespace StageApp\Stages;
 
 use StageApp\App;
-use StageApp\Http\Response;
 use StageApp\Interfaces\StageInterface;
 use StageApp\Interfaces\WithStagesInterface;
 use StageApp\Traits\ThroughStages;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class StageMakeHelloWorldResponse
