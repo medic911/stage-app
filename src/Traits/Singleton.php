@@ -2,6 +2,10 @@
 
 namespace StageApp\Traits;
 
+/**
+ * Trait Singleton
+ * @package StageApp\Traits
+ */
 trait Singleton
 {
     /**

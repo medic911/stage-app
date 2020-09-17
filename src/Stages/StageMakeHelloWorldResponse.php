@@ -8,6 +8,10 @@ use StageApp\Interfaces\StageInterface;
 use StageApp\Interfaces\WithStagesInterface;
 use StageApp\Traits\ThroughStages;
 
+/**
+ * Class StageMakeHelloWorldResponse
+ * @package StageApp\Stages
+ */
 class StageMakeHelloWorldResponse implements StageInterface, WithStagesInterface
 {
     use ThroughStages;

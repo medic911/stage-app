@@ -33,7 +33,7 @@ trait ThroughStages
     }
 
     /**
-     * @param StageInterface $stage
+     * @param mixed $result
      */
     protected function handleStageResult($result): void
     {

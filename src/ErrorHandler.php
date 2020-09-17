@@ -5,6 +5,10 @@ namespace StageApp;
 use StageApp\Interfaces\ErrorHandlerInterface;
 use Throwable;
 
+/**
+ * Class ErrorHandler
+ * @package StageApp
+ */
 class ErrorHandler implements ErrorHandlerInterface
 {
     /**

@@ -2,10 +2,9 @@
 
 namespace StageApp\Interfaces;
 
-use StageApp\App;
-
 /**
- * Interface AppStageInterface
+ * Interface StageInterface
+ * @package StageApp\Interfaces
  */
 interface StageInterface
 {

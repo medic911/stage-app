@@ -2,10 +2,9 @@
 
 namespace StageApp;
 
-use StageApp\Interfaces\ErrorHandlerInterface;
-use StageApp\Interfaces\StageInterface;
 use StageApp\Http\Request;
 use StageApp\Http\Response;
+use StageApp\Interfaces\ErrorHandlerInterface;
 use StageApp\Interfaces\WithStagesInterface;
 use StageApp\Traits\Singleton;
 use StageApp\Traits\ThroughStages;

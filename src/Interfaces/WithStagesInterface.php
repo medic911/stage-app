@@ -9,7 +9,7 @@ namespace StageApp\Interfaces;
 interface WithStagesInterface
 {
     /**
-     * @return $this
+     *
      */
     public function goThroughStages(): void;
 }

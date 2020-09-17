@@ -7,6 +7,10 @@ use StageApp\Exceptions\RouteNotFoundException;
 use StageApp\Http\Request;
 use StageApp\Interfaces\RouterInterface;
 
+/**
+ * Class Router
+ * @package StageApp
+ */
 class Router implements RouterInterface
 {
     /**
