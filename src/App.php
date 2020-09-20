@@ -2,105 +2,115 @@
 
 namespace StageApp;
 
+use StageApp\Exceptions\NotAllowedResponseException;
 use StageApp\Http\Request;
 use StageApp\Interfaces\ErrorHandlerInterface;
-use StageApp\Interfaces\WithStagesInterface;
 use StageApp\Traits\Singleton;
-use StageApp\Traits\ThroughStages;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Throwable;
 
-/**
- * Class App
- * @package StageApp
- */
-class App implements WithStagesInterface
+class App
 {
-    use Singleton, ThroughStages;
+    use Singleton;
 
     /**
-     * @var array
-     */
-    protected $stages;
-
-    /**
-     * @var ErrorHandlerInterface
-     */
-    protected $errorHandler;
-
-    /**
-     * @var Request|null
+     * @var Request
      */
     protected $request;
 
     /**
-     * @var Response|null
+     * @var Response
      */
     protected $response;
 
     /**
+     * @var Session
+     */
+    protected $session;
+
+    /**
      * App constructor.
      */
-    private function __construct()
+    public function __construct()
     {
-        $this->request = null;
-        $this->response = null;
-        $this->errorHandler = new ErrorHandler;
+        $this->request = new Request;
+        $this->session = new Session;
+        $this->response = new Response;
     }
 
     /**
-     * @param array $options
+     * @param array $stages
+     * @param ErrorHandlerInterface $errorHandler
      */
-    public function run(array $options): void
+    public function run(array $stages, ErrorHandlerInterface $errorHandler): void
     {
         try {
-            $this->setOptions($options);
-            $this->goThroughStages();
-            $this->terminateWith($this->response);
-        } catch (\Throwable $e) {
-            $this->errorHandler->handle($e);
+            $stageLine = new StageLine;
+            array_walk($stages, function ($stage) use ($stageLine) {
+                $stageLine->stage($stage);
+            });
+
+            $stageLine->process($this, function ($result) {
+                $this->handleStage($result);
+            });
+
+            $this->sendResponse();
+        } catch (Throwable $e) {
+            $errorHandler->handle($e);
         }
     }
 
     /**
-     * @param mixed $response
+     * @throws NotAllowedResponseException
      */
-    public function terminateWith($response): void
+    protected function sendResponse(): void
     {
-        if ($response instanceof Response) {
-            $response->send();
+        if (!$this->response instanceof Response) {
+            throw new NotAllowedResponseException;
         }
 
-        exit();
+        $this->response->send();
     }
 
     /**
-     * @return Request|null
+     * @param Response $response
+     * @throws NotAllowedResponseException
      */
-    public function getRequest(): ?Request
+    public function terminateWith(Response $response): void
+    {
+        $this->response = $response;
+        $this->sendResponse();
+    }
+
+    /**
+     * @return Request
+     */
+    public function getRequest(): Request
     {
         return $this->request;
     }
 
     /**
-     * @return Response|null
+     * @return Response
      */
-    public function getResponse(): ?Response
+    public function getResponse(): Response
     {
         return $this->response;
     }
 
     /**
-     * @return array
+     * @return Session
      */
-    protected function getStages(): array
+    public function getSession(): Session
     {
-        return $this->stages;
+        return $this->session;
     }
 
     /**
      * @param mixed $result
      */
-    protected function handleStageResult($result): void
+    protected function handleStage($result): void
     {
         if ($result instanceof Request) {
             $this->request = $result;
@@ -109,20 +119,9 @@ class App implements WithStagesInterface
         if ($result instanceof Response) {
             $this->response = $result;
         }
-    }
 
-    /**
-     * @param array $options
-     * @return $this
-     */
-    protected function setOptions(array $options): self
-    {
-        $this->stages = $options['stages'] ?? [];
-
-        if (array_key_exists('error_handler', $options) && $options['error_handler'] instanceof ErrorHandlerInterface) {
-            $this->errorHandler = $options['error_handler'];
+        if ($result instanceof Session) {
+            $this->session = $result;
         }
-
-        return $this;
     }
 }

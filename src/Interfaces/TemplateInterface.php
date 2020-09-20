@@ -2,10 +2,6 @@
 
 namespace StageApp\Interfaces;
 
-/**
- * Interface TemplateInterface
- * @package StageApp\Interfaces
- */
 interface TemplateInterface
 {
     /**

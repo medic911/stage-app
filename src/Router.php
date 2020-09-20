@@ -5,13 +5,8 @@ namespace StageApp;
 use Illuminate\Support\Str;
 use StageApp\Exceptions\RouteNotFoundException;
 use StageApp\Http\Request;
-use StageApp\Interfaces\RouterInterface;
 
-/**
- * Class Router
- * @package StageApp
- */
-class Router implements RouterInterface
+class Router
 {
     /**
      * @var string
@@ -49,20 +44,20 @@ class Router implements RouterInterface
 
     /**
      * @param Request $request
-     * @return array
+     * @return callable
      * @throws RouteNotFoundException
      */
-    public function match(Request $request): array
+    public function match(Request $request)
     {
         $path = $this->preparePath($request->getPathAsArray());
         $this->matchFromPath($path);
 
         if (!class_exists($this->controller)) {
-            throw new RouteNotFoundException("Route not found for {$request->getBasePath()}");
+            throw new RouteNotFoundException("Route not found for {$request->getPathInfo()}");
         }
 
         if (!is_callable([$this->controller, $this->action])) {
-            throw new RouteNotFoundException("Route not found for {$request->getBasePath()}");
+            throw new RouteNotFoundException("Route not found for {$request->getPathInfo()}");
         }
 
         return [new $this->controller, $this->action];

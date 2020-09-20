@@ -3,29 +3,24 @@
 namespace StageApp\Stages;
 
 use StageApp\App;
-use StageApp\Exceptions\InvalidResponseType;
+use StageApp\Exceptions\NotAllowedResponseException;
 use StageApp\Exceptions\RouteNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
-use StageApp\Classes\ResponseFactory;
-use StageApp\Interfaces\StageInterface;
+use StageApp\Facades\ResponseFactory;
 use StageApp\Router;
 
-/**
- * Class StageMakeResponse
- * @package StageApp\Stages
- */
-class StageMakeResponse implements StageInterface
+class MakeResponse
 {
     /**
-     * @param App $context
+     * @param App $app
      * @return Response|mixed
-     * @throws InvalidResponseType
+     * @throws NotAllowedResponseException
      */
-    public function handle($context)
+    public function __invoke(App $app): Response
     {
         $router = new Router('');
         try {
-            $callable = $router->match($context->getRequest());
+            $callable = $router->match($app->getRequest());
         } catch (RouteNotFoundException $e) {
             return ResponseFactory::e404($e->getMessage());
         }

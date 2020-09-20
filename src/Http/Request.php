@@ -44,7 +44,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
      */
     public function getPathAsArray(): array
     {
-        return $this->basePathAsArray;
+        return $this->pathAsArray;
     }
 
     /**
@@ -61,14 +61,14 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     protected function makePathAsArray(): self
     {
         $path = explode('/', $this->getPathInfo());
-        $this->basePathAsArray = array_filter($path, function ($part) {
+        $this->pathAsArray = array_filter($path, function ($part) {
             return !empty($part) &&
                 $part !== '.' &&
                 $part !== '..' &&
                 trim($part) !== '';
         });
 
-        $this->basePathAsArray = array_values($this->basePathAsArray);
+        $this->pathAsArray = array_values($this->pathAsArray);
 
         return $this;
     }

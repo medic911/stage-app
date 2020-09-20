@@ -4,7 +4,7 @@ namespace StageApp\Exceptions;
 
 use Exception;
 
-class RouteNotFoundException extends Exception
+class NotAllowedResponseException extends Exception
 {
     //
 }

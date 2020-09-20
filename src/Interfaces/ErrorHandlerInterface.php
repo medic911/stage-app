@@ -2,14 +2,12 @@
 
 namespace StageApp\Interfaces;
 
-/**
- * Interface AppErrorHandlerInterface
- * @package StageApp\Interfaces
- */
+use Throwable;
+
 interface ErrorHandlerInterface
 {
     /**
-     * @param \Throwable $e
+     * @param Throwable $e
      */
-    public function handle(\Throwable $e): void;
+    public function handle(Throwable $e): void;
 }

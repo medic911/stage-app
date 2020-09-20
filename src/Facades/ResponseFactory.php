@@ -1,21 +1,17 @@
 <?php
 
-namespace StageApp\Classes;
+namespace StageApp\Facades;
 
-use StageApp\Exceptions\InvalidResponseType;
+use StageApp\Exceptions\NotAllowedResponseException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Class ResponseFactory
- * @package StageApp\Http
- */
 class ResponseFactory
 {
     /**
      * @param $content
      * @return Response
-     * @throws InvalidResponseType
+     * @throws NotAllowedResponseException
      */
     public static function fromContent($content): Response
     {
@@ -23,7 +19,7 @@ class ResponseFactory
             return $content;
         }
 
-        if (is_string($content) || is_integer($content)) {
+        if (is_string($content) || is_numeric($content)) {
             return new Response($content);
         }
 
@@ -31,7 +27,7 @@ class ResponseFactory
             return self::json($content);
         }
 
-        throw new InvalidResponseType('Invalid response type');
+        throw new NotAllowedResponseException('Not allowed response');
     }
 
     /**
