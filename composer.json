@@ -16,6 +16,9 @@
     "autoload": {
         "psr-4": {
             "StageApp\\": "src/"
-        }
+        },
+        "files":[
+            "src/helpers.php"
+        ]
     }
 }
