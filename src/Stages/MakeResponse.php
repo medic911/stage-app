@@ -13,7 +13,7 @@ class MakeResponse
 {
     /**
      * @param App $app
-     * @return Response|mixed
+     * @return Response
      * @throws NotAllowedResponseException
      */
     public function __invoke(App $app): Response

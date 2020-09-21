@@ -9,7 +9,7 @@ class MakeRequest
 {
     /**
      * @param App $app
-     * @return mixed|void
+     * @return Request
      */
     public function __invoke(App $app): Request
     {

@@ -9,7 +9,7 @@ class MakeSession
 {
     /**
      * @param App $app
-     * @return mixed|void
+     * @return Session
      */
     public function __invoke(App $app): Session
     {
