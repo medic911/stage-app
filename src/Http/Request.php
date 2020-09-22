@@ -2,6 +2,8 @@
 
 namespace StageApp\Http;
 
+use Illuminate\Support\Str;
+
 class Request extends \Symfony\Component\HttpFoundation\Request
 {
     /**
@@ -39,6 +41,14 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     public function getPathInfoAsArray(): array
     {
         return $this->pathInfoAsArray;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPathInfoWithoutLocale(): string
+    {
+        return Str::replaceFirst('/' . $this->getLocale(), '', $this->getPathInfo());
     }
 
     /**

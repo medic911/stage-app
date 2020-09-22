@@ -2,6 +2,7 @@
 
 use StageApp\App;
 use StageApp\Http\Request;
+use StageApp\Router\AnnotatedRouter;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 if (!function_exists('app')) {
@@ -31,5 +32,15 @@ if (!function_exists('session')) {
     function session(): Session
     {
         return app()->getSession();
+    }
+}
+
+if (!function_exists('router')) {
+    /**
+     * @return AnnotatedRouter
+     */
+    function router(): AnnotatedRouter
+    {
+        return AnnotatedRouter::getInstance();
     }
 }

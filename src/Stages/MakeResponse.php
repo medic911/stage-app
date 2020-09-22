@@ -2,12 +2,16 @@
 
 namespace StageApp\Stages;
 
+use Illuminate\Support\Arr;
 use StageApp\App;
+use StageApp\Dummies\Foo;
 use StageApp\Exceptions\NotAllowedResponseException;
 use StageApp\Exceptions\RouteNotFoundException;
+use StageApp\Router\AnnotatedRouter;
 use Symfony\Component\HttpFoundation\Response;
 use StageApp\Facades\ResponseFactory;
-use StageApp\Router;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class MakeResponse
 {
@@ -18,13 +22,15 @@ class MakeResponse
      */
     public function __invoke(App $app): Response
     {
-        $router = new Router('');
+        $router = AnnotatedRouter::getInstance();
+
         try {
-            $callable = $router->match($app->getRequest());
-        } catch (RouteNotFoundException $e) {
+            $parameters = $router->matchRequest($app->getRequest());
+            $response = call_user_func($parameters['callable'], ...$parameters['arguments']);
+        } catch (ResourceNotFoundException|MethodNotAllowedException $e) {
             return ResponseFactory::e404($e->getMessage());
         }
 
-        return ResponseFactory::fromContent(call_user_func($callable));
+        return ResponseFactory::fromContent($response);
     }
 }
