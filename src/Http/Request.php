@@ -7,12 +7,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     /**
      * @var array
      */
-    protected $pathAsArray;
-
-    /**
-     * @var string|null
-     */
-    protected $lang;
+    protected $pathInfoAsArray;
 
     /**
      * Request constructor.
@@ -35,40 +30,31 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     ) {
         parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
 
-        $this->makePathAsArray();
-        $this->lang = $this->basePathAsArray[0] ?? 'en';
+        $this->makePathInfoAsArray();
     }
 
     /**
      * @return array
      */
-    public function getPathAsArray(): array
+    public function getPathInfoAsArray(): array
     {
-        return $this->pathAsArray;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getLang(): ?string
-    {
-        return $this->lang;
+        return $this->pathInfoAsArray;
     }
 
     /**
      * @return $this
      */
-    protected function makePathAsArray(): self
+    protected function makePathInfoAsArray(): self
     {
         $path = explode('/', $this->getPathInfo());
-        $this->pathAsArray = array_filter($path, function ($part) {
+        $this->pathInfoAsArray = array_filter($path, function ($part) {
             return !empty($part) &&
                 $part !== '.' &&
                 $part !== '..' &&
                 trim($part) !== '';
         });
 
-        $this->pathAsArray = array_values($this->pathAsArray);
+        $this->pathInfoAsArray = array_values($this->pathInfoAsArray);
 
         return $this;
     }

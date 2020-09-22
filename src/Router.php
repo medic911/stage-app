@@ -49,7 +49,7 @@ class Router
      */
     public function match(Request $request)
     {
-        $path = $this->preparePath($request->getPathAsArray());
+        $path = $this->preparePath($request->getPathInfoAsArray());
         $this->matchFromPath($path);
 
         if (!class_exists($this->controller)) {
